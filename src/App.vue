@@ -2,6 +2,11 @@
 import { onMounted, ref, reactive } from 'vue';
 import { getDataset } from './api/dataset';
 import { postDataset } from './api/dataset';
+import { getDatasetById } from './api/dataset';
+import { delDataset } from './api/dataset';
+import { putDataset } from './api/dataset';
+
+
 
 
 let dataset = ref<string>('')
@@ -19,7 +24,6 @@ interface Data {
     userData: string[]
     //   userData: Array<string | number>;
 }
-let require = ref<number>
 
 const data: Data = reactive({
     id: 10,
@@ -27,7 +31,68 @@ const data: Data = reactive({
     input: '',
     output: '',
     userData: []
-});
+})
+const upgradeData: Data = reactive({
+    id: 10,
+    instruction: '',
+    input: '',
+    output: '',
+    userData: []
+})
+
+const getResult = () => {
+    getDatasetById(data.id).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+            console.log(res.data)
+
+            dataset = res.data        // 返回来的数据
+            instruction = dataset.instruction;
+            input = dataset.input;
+            output = dataset.output;  //解构
+            console.log(instruction, input, output)
+
+            let data_item = `{"instruction": "${instruction}", "input": "${input}","output": "${output}"}`  //组装
+            console.log(data_item)
+            data.userData.unshift(data_item);
+                                     
+
+        } else {
+            console.log(`获取id为${data.id}失败！`)
+        }
+    })
+}
+const delResult = () => {
+    delDataset(data.id).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+
+            let id = res.data        // 返回来的数据
+            console.log(id.data)
+
+            // 根据id列表找到 与数据库中的id相匹配的结果 
+            // data.userData.unshift(data_item); 删除数据中的id
+        } else {
+            console.log(`获取id为${data.id}失败！`)
+        }
+    })
+}
+const upgradeResult = () => {
+    putDataset(upgradeData.id,upgradeData.instruction,upgradeData.output).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+
+            let data = res.data        // 返回来的数据
+            console.log('oldDataset' ,data.oldDataset)
+            console.log('newDataset' , data.newDataset)
+
+            // 根据id列表找到 与数据库中的id相匹配的结果 
+            // data.userData.unshift(data_item); 更新数据中的id 的那条数据
+        } else {
+            console.log(`更新id为${data.id}失败！`)
+        }
+    })
+}
 
 const postResult = () => {
     postDataset(data.instruction, data.output).then(res => {
@@ -46,16 +111,7 @@ const postResult = () => {
 };
 
 
-const getResult = () => {
-    getDataset(data.id).then(res => {
-        console.log(res);
-        if (res.status == 200) {
-            console.log(res.data)
-        } else {
-            console.log(`获取id为${data.id}失败！`)
-        }
-    })
-}
+
 
 const send = () => {
     getDataset().then(res => {
@@ -114,10 +170,15 @@ onMounted(() => {
         <ul v-for="value in data.userData">
             <li>{{ value }}</li>
         </ul>
+    
     </div>
+    <!-- 获取id为 的数据集 -->
     <div>
-        请输入您想查询的数据集ID：<input type="text" v-model="data.id">
-
+        请输入您想查询的数据集ID：<input type="text" v-model="data.id"><button @click="getResult"> 获取 </button> 
+    </div>
+    <!--删除id为 的数据集-->
+    <div>
+        请输入您想删除的数据集ID：<input type="text" v-model="data.id"><button @click="delResult"> 删除 </button> 
     </div>
 
 
@@ -129,13 +190,13 @@ onMounted(() => {
             <模型生成的响应>
         </span>
     </div>
+<!-- 更新数据集 -->
+<div>
+        请输入您想更新的数据集ID：<input type="text" v-model="upgradeData.id"> 输入 <input type="text" v-model="upgradeData.instruction"> 输出<input type="text" v-model="upgradeData.output">
+                
+        <button @click="upgradeResult"> 更新 </button> 
+</div>
 
-
-    <!-- 获取id为 的数据集 -->
-    <div>
-        <input type="text" v-model="data.id">
-        {{ data.id }}
-    </div>
 </template>
 
 
