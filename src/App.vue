@@ -5,6 +5,7 @@ import { postDataset } from './api/dataset';
 import { getDatasetById } from './api/dataset';
 import { delDataset } from './api/dataset';
 import { putDataset } from './api/dataset';
+import { getDatasetAll } from './api/dataset';
 
 
 
@@ -39,6 +40,8 @@ const upgradeData: Data = reactive({
     output: '',
     userData: []
 })
+let allData = reactive([])
+
 
 const getResult = () => {
     getDatasetById(data.id).then(res => {
@@ -144,6 +147,17 @@ onMounted(() => {
         num.value++
         return dataset
     })
+    getDatasetAll().then(res => {
+        console.log('向后端发送请求挂载后')
+        console.log(res)
+        allData = res.data.data
+        // num.value++
+        console.log('allData内容：', allData)
+        console.log('alldata的类型是： ',typeof (allData))
+        // let name = 'rkwork'
+        // allData.unshift(name)
+        // return dataset
+    })
 })
 
 </script>
@@ -167,10 +181,16 @@ onMounted(() => {
             <li>{{ data.output }}</li><button @click="handleClick">点击按钮</button>
 
         </div>
+        <!-- 增加单条数据显示出来 -->
         <ul v-for="value in data.userData">
             <li>{{ value }}</li>
         </ul>
-    
+        <!-- 所有的数据显示出来 -->
+        <ul>
+        <li v-for="(value, index) in allData">
+            {{ index }}: {{ value[1] }}
+        </li>
+        </ul>
     </div>
     <!-- 获取id为 的数据集 -->
     <div>
@@ -190,12 +210,16 @@ onMounted(() => {
             <模型生成的响应>
         </span>
     </div>
-<!-- 更新数据集 -->
-<div>
-        请输入您想更新的数据集ID：<input type="text" v-model="upgradeData.id"> 输入 <input type="text" v-model="upgradeData.instruction"> 输出<input type="text" v-model="upgradeData.output">
-                
-        <button @click="upgradeResult"> 更新 </button> 
-</div>
+    <!-- 更新数据集 -->
+    <div>
+            请输入您想更新的数据集ID：<input type="text" v-model="upgradeData.id"> 输入 <input type="text" v-model="upgradeData.instruction"> 输出<input type="text" v-model="upgradeData.output">
+                    
+            <button @click="upgradeResult"> 更新 </button> 
+    </div>
+    <!-- 拿到所有的数据 渲染到页面上 每一条数据的样式待修改-->
+    <div>
+        
+    </div>
 
 </template>
 

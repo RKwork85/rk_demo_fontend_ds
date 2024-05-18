@@ -16,11 +16,11 @@ export function getDatasetById(id: number) {
     })
 }
 
-// resp: 返回所有数据, 待做
-export function getDatasetAll(id: number) {
+// resp: 返回所有数据, 一个json： {data:[[{id,{}],[{id,{}],...]]} 示例：[5, {'input': '', 'instruction': '你好', 'output': '我是广州阿斯加德莱克斯顿就看见阿拉萨吉拉拉吉林省拉德季拉丝机到啦萨达撒娇漏打卡'}]
+export function getDatasetAll() {
     return axiosInstance.request({
         method: 'GET',
-        url: `/dataset/${id}`
+        url: '/dataset'
     })
 }
 
