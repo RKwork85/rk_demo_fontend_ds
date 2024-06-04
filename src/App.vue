@@ -200,7 +200,6 @@ onMounted(() => {
         请输入您想删除的数据集ID：<input type="text" v-model="data.id"><button @click="delResult"> 删除 </button> 
     </div>
 
-
     <div class="rk-st-dialogue" style="background-color: black;    height: 100px;width: 100%;">
         <span style="color: rgb(171, 227, 56);">Human: </span><span style="color: rgb(245, 171, 53);">
             <用户的问题或对话内容><br>
