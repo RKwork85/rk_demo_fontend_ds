@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive } from 'vue';
-import { getDataset } from './api/dataset';
-import { postDataset } from './api/dataset';
-import { getDatasetById } from './api/dataset';
-import { delDataset } from './api/dataset';
-import { putDataset } from './api/dataset';
-import { getDatasetAll } from './api/dataset';
+import { getDataset,postDataset,getDatasetAll,getDatasetById, delDataset, putDataset } from './api/dataset';
 
 
 
@@ -40,7 +35,7 @@ const upgradeData: Data = reactive({
     output: '',
     userData: []
 })
-let allData = reactive([])
+const allData = reactive([])
 
 
 const getResult = () => {
@@ -53,7 +48,8 @@ const getResult = () => {
             instruction = dataset.instruction;
             input = dataset.input;
             output = dataset.output;  //解构
-            console.log(instruction, input, output)
+            console.log(instruction, input, output )
+            console.log("来自第10条数据")
 
             let data_item = `{"instruction": "${instruction}", "input": "${input}","output": "${output}"}`  //组装
             console.log(data_item)
@@ -141,22 +137,25 @@ const handleClick = () => {
 
 onMounted(() => {
     getDataset().then(res => {
-        console.log('向后端发送请求挂载后')
-        console.log(res)
+        console.log('向后端发送请求挂载后：单条数据请求')
+        console.log('返回的单条数据格式',res)
         dataset = res.data
         num.value++
         return dataset
     })
     getDatasetAll().then(res => {
-        console.log('向后端发送请求挂载后')
-        console.log(res)
-        allData = res.data.data
-        // num.value++
-        console.log('allData内容：', allData)
-        console.log('alldata的类型是： ',typeof (allData))
+        console.log('向后端发送请求挂载后：所有数据请求')
+        console.log('返回的所有数据格式',res)
+
+        // allData = res.data.data
+        // console.log('allData内容：', allData)
+        // console.log('alldata的类型是： ',typeof (allData))
         // let name = 'rkwork'
         // allData.unshift(name)
-        // return dataset
+        // return allData
+
+        const newData: any[] = res.data.data;
+        allData.push(...newData);
     })
 })
 
@@ -165,8 +164,8 @@ onMounted(() => {
 <template>
     <h1>这里是rkwork <br>现在的工作内容是要将数据集制作的前端给做出来！</h1>
 
-    <h1></h1>{{ dataset }}
-    <hr>
+    <h1></h1>{{ dataset }}<hr>
+    
     {{ num }}
     <button @click="send"> 发送事件</button>
     <hr>
@@ -178,7 +177,7 @@ onMounted(() => {
         输出：<input type="text" v-model="data.output">
         <div>
             <li>{{ data.instruction }}</li>
-            <li>{{ data.output }}</li><button @click="handleClick">点击按钮</button>
+            <li>{{ data.output }}</li><button @click="handleClick">增加数据按钮</button>
 
         </div>
         <!-- 增加单条数据显示出来 -->
@@ -188,7 +187,7 @@ onMounted(() => {
         <!-- 所有的数据显示出来 -->
         <ul>
         <li v-for="(value, index) in allData">
-            {{ index }}: {{ value[1] }}
+            {{ index }}:id{{ value[0] }}: {{ value[1] }}
         </li>
         </ul>
     </div>
