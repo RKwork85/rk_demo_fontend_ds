@@ -60,7 +60,7 @@ const getResult = () => {
 
         } else {
             console.log(`获取id为${data.id}失败！`)
-        }
+        } 
     })
 }
 const delResult = () => {
