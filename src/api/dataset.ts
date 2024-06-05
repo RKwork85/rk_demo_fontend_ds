@@ -1,5 +1,29 @@
 import axiosInstance from "../utils/request";
 
+export function loginPost(uuid: string) {
+    return axiosInstance.request({
+        method: 'POST',
+        url: '/login',
+        data: {
+            uuid: uuid,
+        }
+
+    })
+}
+
+export function setUuid() {
+    return axiosInstance.request({
+        method: 'GET',
+        url: `/api/login`
+    })
+}
+
+export function checkUuid() {
+    return axiosInstance.request({
+        method: 'GET',
+        url: `/api/dashboard`
+    })
+}
 // resp: 返回第58条数据
 export function getDataset() {
     return axiosInstance.request({
@@ -25,11 +49,12 @@ export function getDatasetAll() {
 }
 
 // resp: 增加一条数据
-export function postDataset(instruction: string, output: string) {
+export function postDataset(uuid:string, instruction: string, output: string) {
     return axiosInstance.request({
         method: 'POST',
         url: '/dataset',
         data: {
+            uuid:uuid,
             instruction: instruction,
             output: output
         }

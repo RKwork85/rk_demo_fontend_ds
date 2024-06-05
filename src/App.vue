@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive } from 'vue';
-import { getDataset,postDataset,getDatasetAll,getDatasetById, delDataset, putDataset } from './api/dataset';
+import { getDataset,postDataset,getDatasetAll,getDatasetById, delDataset, putDataset, loginPost,checkUuid,setUuid } from './api/dataset';
 
 
 
@@ -18,6 +18,7 @@ interface Data {
     input: string
     output: string
     userData: string[]
+    uuid: string
     //   userData: Array<string | number>;
 }
 
@@ -26,7 +27,8 @@ const data: Data = reactive({
     instruction: '',
     input: '',
     output: '',
-    userData: []
+    userData: [],
+    uuid:'rkkk'
 })
 const upgradeData: Data = reactive({
     id: 10,
@@ -94,8 +96,8 @@ const upgradeResult = () => {
 }
 
 const postResult = () => {
-    postDataset(data.instruction, data.output).then(res => {
-        console.log(res);
+    postDataset(data.uuid, data.instruction, data.output).then(res => {
+        console.log(res, "增加的一条数据");
         if (res.status == 200) {
 
             let data_item = `{"instruction": "${data.instruction}", "input": "${data.input}","output": "${data.output}"}`
@@ -134,6 +136,34 @@ const handleClick = () => {
     postResult();
 };
 
+const login = () =>{
+
+    setUuid().then(res => {
+        console.log(res, "获取登录后返回的信息");
+        if (res.status == 200) {
+            console.log("登录成功")
+
+        } else {
+            console.log('登录失败');
+        }
+    });
+};
+const checklogin = () =>{
+
+checkUuid().then(res => {
+    console.log(res, "获取登录后返回的信息");
+    if (res.status == 200) {
+        console.log("登录成功")
+
+    } else {
+        console.log('登录失败');
+    }
+});
+};
+
+
+
+    
 
 onMounted(() => {
     getDataset().then(res => {
@@ -162,6 +192,9 @@ onMounted(() => {
 </script>
 
 <template>
+    <button style="border:solid 2px" @click="login"> 登录按钮</button>
+    <button style="border:solid 2px" @click="checklogin"> 检查登录</button>
+
     <h1>这里是rkwork <br>现在的工作内容是要将数据集制作的前端给做出来！</h1>
 
     <h1></h1>{{ dataset }}<hr>
